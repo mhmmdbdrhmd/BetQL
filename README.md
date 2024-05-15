@@ -28,10 +28,47 @@ The agent's performance is evaluated based on its win rate against the dealer ov
 
 ## 🚀 Getting Started
 
-### Installation
-Ensure Python 3.8+ is installed. Install dependencies with:
+### Prerequisites
+- Ensure Python 3.7 is installed on your system.
 
-```bash 
+### Installation
+To set up and run the project on Ubuntu:
+
+1. Update and upgrade your system packages:
+
+```bash
+sudo apt update -y && sudo apt upgrade -y
+```
+
+2. Install Python 3.7 and virtualenv if they are not installed:
+
+```bash
+sudo apt install python3.7 virtualenv -y
+```
+
+3. Clone the repository:
+
+```bash
+git clone git@github.com:mhmmdbdrhmd/BetQL.git
+```
+
+4. Navigate to the project directory:
+
+```bash
+cd BetQL
+```
+
+5. Create a virtual environment and activate it:
+
+```bash
+virtualenv venv --python=python3.7
+source venv/bin/activate
+```
+
+
+6. Install the required dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
