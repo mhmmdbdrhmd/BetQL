@@ -26,10 +26,18 @@ The agent uses a Q-learning algorithm, a popular method in reinforcement learnin
 ### Model Evaluation
 The agent's performance is evaluated based on its win rate against the dealer over several games. Performance metrics are logged and can be visualized to track the agent's improvement over time.
 
-## 🚀 Getting Started
+## 🧪 Tested On
 
-### Prerequisites
-- Ensure Python 3.7 is installed on your system.
+The application has been tested on the following operating systems:
+
+- **Ubuntu 22.04** ✔️
+- **macOS** ❌ (not yet tested)
+- **Windows** ❌ (not yet tested)
+
+Testing on macOS and Windows is planned for future updates. If you try running this project on one of these platforms, any feedback or contributions to enhance compatibility would be greatly appreciated.
+
+
+## 🚀 Getting Started
 
 ### Installation
 To set up and run the project on Ubuntu:
