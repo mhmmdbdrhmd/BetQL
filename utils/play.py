@@ -1,54 +1,67 @@
-from environments.blackjack_env import blackjack_env
-import os
+from environments.blackjack_env import blackjack_env, ACTION_NAMES
+from utils.model_store import load_model, choose_model
+
+GREEN = '\033[92m'
+RESET = '\033[0m'
+
 
 class Player:
     def __init__(self, env, agent=None):
         self.env = env
         self.agent = agent
 
+    def _ask_action(self, observation):
+        valid = self.env.valid_actions()
+        suggested = None
+        if self.agent:
+            suggested = self.agent.suggest(observation)
+            if suggested not in valid:
+                suggested = 1  # the env falls back to hit for invalid choices
+        labels = []
+        for action in valid:
+            name = ACTION_NAMES[action]
+            labels.append(GREEN + name + RESET if action == suggested else name)
+        name_to_action = {ACTION_NAMES[a]: a for a in valid}
+        while True:
+            choice = input("Enter {}: ".format(' / '.join("'{}'".format(l) for l in labels))).strip().lower()
+            if choice in name_to_action:
+                return name_to_action[choice]
+            print("Invalid choice.")
+
     def play(self):
         while True:
             observation = self.env.reset()
             done = False
-            
+            reward = 0
+
             while not done:
                 self.env.render()
-                if self.agent:
-                    suggested_action = self.agent.agent.forward(observation)
-                    action = input("Enter \033[92m'hit'\033[0m or 'stand': ").strip().lower() if suggested_action == 1 else input("Enter 'hit' or \033[92m'stand'\033[0m: ").strip().lower()
-                    action = 1 if action == 'hit' else 0
-
-                else:
-                    action = input("Enter 'hit' or 'stand': ").strip().lower()
-                    action = 1 if action == 'hit' else 0
-                
+                action = self._ask_action(observation)
                 observation, reward, done, info = self.env.step(action)
                 self.env.render(display_full_dealer=done)
-            
-            print("Game over. ", "You win!" if reward > 0 else "You lose!" if reward < 0 else "It's a draw!")
-            
-            if not self.agent:
-                play_again = input("Play again? (y/n): ").strip().lower()
-                if play_again != 'y':
-                    break
-        return True  # To indicate game play completed
+
+            print("Game over. ",
+                  "You win {:g}!".format(reward) if reward > 0
+                  else "You lose {:g}!".format(-reward) if reward < 0
+                  else "It's a draw!")
+
+            if input("Play again? (y/n): ").strip().lower() != 'y':
+                break
+        return True
+
 
 def play(env=None, rl_agent=None):
+    if rl_agent is None:
+        if input("Do you want to load an agent for suggestions? (y/n): ").strip().lower() == 'y':
+            name = choose_model()
+            if name:
+                env, rl_agent = load_model(name)
+            else:
+                print("Continuing without an agent.")
+
     if env is None:
         env = blackjack_env()
 
-    if rl_agent is None:
-        load_agent = input("Do you want to load an agent for suggestions? (y/n): ").strip().lower()
-        if load_agent == 'y':
-            filename = input("Enter the filename of the weights to load: ")
-            if os.path.exists("weights/" +filename + ".h5f.index"):
-                from agents.q_learning_agent import QLearningAgent  # Ensure this import doesn't cause a circular dependency
-                rl_agent = QLearningAgent(env=env, total_states=31, actions=2)
-                rl_agent.load("weights/" +filename + ".h5f.index")
-            else:
-                print("File not found. Continuing without an agent.")
-    
-
     player = Player(env, agent=rl_agent)
     player.play()
-    return True  # Return to main menu
+    return True

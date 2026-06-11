@@ -1,0 +1,12 @@
+{
+  "rules": "american",
+  "total_states": 32,
+  "actions": 4,
+  "hidden_layers": [
+    128,
+    64,
+    32
+  ],
+  "dropout": 0.0,
+  "dueling": true
+}

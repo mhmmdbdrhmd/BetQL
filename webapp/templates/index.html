@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BetQL — Blackjack Reinforcement Learning</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-view="casino">
+
+<header class="topbar">
+  <div class="brand"><span class="brand-suit">♠</span> BetQL</div>
+  <nav class="tabs">
+    <button id="tab-casino" class="tab active" type="button">🎰 Casino</button>
+    <button id="tab-lab" class="tab" type="button">🔬 Lab</button>
+  </nav>
+</header>
+
+<!-- ============================== CASINO ============================== -->
+<main id="view-casino">
+  <div class="casino-bar">
+    <label class="field">Rules
+      <select id="play-rules">
+        <option value="american">American</option>
+        <option value="european">European</option>
+      </select>
+    </label>
+    <label class="field">Advisor
+      <select id="play-model"><option value="">— no advisor —</option></select>
+    </label>
+    <button id="btn-deal" class="btn btn-gold" type="button">Deal a hand</button>
+    <div class="bankroll" title="Bet is 10 chips per hand">
+      💰 <span id="bankroll">100</span> chips
+      <button id="btn-reset-bank" class="btn-mini" type="button" title="Reset bankroll">↺</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table">
+      <div class="dealer-area">
+        <div class="area-label">DEALER <span id="dealer-score" class="score-pill" hidden></span></div>
+        <div id="dealer-cards" class="cards"></div>
+        <div id="dealer-note" class="note"></div>
+      </div>
+
+      <div id="advisor-bubble" class="advisor-bubble" hidden></div>
+
+      <div class="player-area">
+        <div class="area-label">YOU</div>
+        <div id="player-hands" class="player-hands">
+          <div class="hint">Press <b>Deal a hand</b> to play ♣ ♦ ♥ ♠</div>
+        </div>
+      </div>
+
+      <div id="actions" class="actions"></div>
+    </div>
+
+    <div id="banner" class="banner" hidden>
+      <div class="banner-card">
+        <div id="banner-title" class="banner-title"></div>
+        <div id="banner-sub" class="banner-sub"></div>
+        <button id="btn-again" class="btn btn-gold" type="button">Deal again</button>
+      </div>
+    </div>
+    <div id="confetti" class="confetti"></div>
+  </div>
+  <div id="play-error" class="toast" hidden></div>
+</main>
+
+<!-- =============================== LAB ================================ -->
+<main id="view-lab" hidden>
+  <div class="lab-grid">
+    <section class="panel config-panel">
+      <h2>Experiment configuration</h2>
+
+      <label class="lfield">Base model
+        <select id="base-model"><option value="">— train a new model —</option></select>
+      </label>
+      <label class="lfield">Rules
+        <select id="train-rules">
+          <option value="american">American</option>
+          <option value="european">European</option>
+        </select>
+      </label>
+      <label class="lfield">Hidden layers
+        <input id="layers" type="text" value="128,64,32" spellcheck="false">
+      </label>
+      <div class="lrow">
+        <label class="lfield">Dropout
+          <input id="dropout" type="number" value="0" min="0" max="0.9" step="0.05">
+        </label>
+        <label class="lfield">Learning rate
+          <input id="lr" type="number" value="0.001" min="0.000001" max="1" step="0.0001">
+        </label>
+      </div>
+      <div class="lrow">
+        <label class="lfield">Training steps
+          <input id="steps" type="number" value="50000" min="100" max="1000000" step="1000">
+        </label>
+        <label class="lfield">Eval episodes
+          <input id="eval-episodes" type="number" value="1000" min="0" max="20000" step="100">
+        </label>
+      </div>
+      <label class="lfield">Save as
+        <input id="model-name" type="text" value="experiment_1" maxlength="40" spellcheck="false">
+      </label>
+
+      <div class="lrow run-row">
+        <button id="btn-train" class="btn btn-run" type="button">▶ Start run</button>
+        <button id="btn-stop" class="btn btn-stop" type="button" disabled>■ Stop</button>
+      </div>
+      <div id="train-error" class="error" hidden></div>
+      <p class="finehint">Stopping saves the partially-trained model after evaluation.</p>
+    </section>
+
+    <section class="panel dash-panel">
+      <div class="dash-head">
+        <span id="phase-badge" class="badge idle">idle</span>
+        <div class="progress">
+          <div id="progress-fill" class="progress-fill"></div>
+          <span id="progress-text" class="progress-text">—</span>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-v" id="st-episodes">—</div><div class="stat-k">episodes</div></div>
+        <div class="stat"><div class="stat-v" id="st-sps">—</div><div class="stat-k">steps / s</div></div>
+        <div class="stat"><div class="stat-v" id="st-reward">—</div><div class="stat-k">mean reward (last 200)</div></div>
+        <div class="stat"><div class="stat-v" id="st-elapsed">—</div><div class="stat-k">elapsed</div></div>
+      </div>
+
+      <div class="chart-box">
+        <div class="chart-title">Rolling mean episode reward</div>
+        <canvas id="chart" width="920" height="330"></canvas>
+      </div>
+
+      <div id="live-rates" class="eval" hidden>
+        <h3>Win / push / loss <span id="live-n" class="eval-n"></span></h3>
+        <div class="ratebar">
+          <div id="lrate-win" class="rate win" title="win"></div>
+          <div id="lrate-push" class="rate push" title="push"></div>
+          <div id="lrate-loss" class="rate loss" title="loss"></div>
+        </div>
+        <div class="ratelegend">
+          <span><i class="dot win"></i>win <b id="llg-win"></b></span>
+          <span><i class="dot push"></i>push <b id="llg-push"></b></span>
+          <span><i class="dot loss"></i>loss <b id="llg-loss"></b></span>
+        </div>
+      </div>
+
+      <div id="eval-panel" class="eval" hidden>
+        <h3>Evaluation <span id="eval-n" class="eval-n"></span></h3>
+        <div class="eval-mean" title="± is the 95% confidence interval of the mean; single hands always scatter with std ≈ 1.1">mean reward <b id="eval-mean"></b> ± <span id="eval-std"></span></div>
+        <div class="ratebar">
+          <div id="rate-win" class="rate win" title="win"></div>
+          <div id="rate-push" class="rate push" title="push"></div>
+          <div id="rate-loss" class="rate loss" title="loss"></div>
+        </div>
+        <div class="ratelegend">
+          <span><i class="dot win"></i>win <b id="lg-win"></b></span>
+          <span><i class="dot push"></i>push <b id="lg-push"></b></span>
+          <span><i class="dot loss"></i>loss <b id="lg-loss"></b></span>
+        </div>
+        <div id="eval-saved" class="saved"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@ cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
 cloudpickle==2.2.1
+Flask==2.2.5
 gast==0.3.3
 google-auth==2.29.0
 google-auth-oauthlib==0.4.6
