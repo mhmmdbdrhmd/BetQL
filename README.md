@@ -23,17 +23,18 @@ A full-stack blackjack laboratory: a **dueling Deep Q-Network** learns the game 
 ## 📑 Table of Contents
 
 1. [Overview](#-overview)
-2. [The Game — exactly what is simulated](#-the-game--exactly-what-is-simulated)
-3. [The Agent — what the network sees and how it learns](#-the-agent--what-the-network-sees-and-how-it-learns)
-4. [The Training Pipeline](#-the-training-pipeline)
-5. [Evaluation Methodology](#-evaluation-methodology)
-6. [Results](#-results)
-7. [How does that compare? Blackjack agents & advantage players](#-how-does-that-compare-blackjack-agents--advantage-players)
-8. [The Web App](#-the-web-app)
-9. [Getting Started](#-getting-started)
-10. [Project Structure](#-project-structure)
-11. [Reading the Dashboard — an honest statistics guide](#-reading-the-dashboard--an-honest-statistics-guide)
-12. [Future Development](#-future-development)
+2. [Why this domain](#-why-this-domain)
+3. [The Game — exactly what is simulated](#-the-game--exactly-what-is-simulated)
+4. [The Agent — what the network sees and how it learns](#-the-agent--what-the-network-sees-and-how-it-learns)
+5. [The Training Pipeline](#-the-training-pipeline)
+6. [Evaluation Methodology](#-evaluation-methodology)
+7. [Results](#-results)
+8. [How does that compare? Blackjack agents & advantage players](#-how-does-that-compare-blackjack-agents--advantage-players)
+9. [The Web App](#-the-web-app)
+10. [Getting Started](#-getting-started)
+11. [Project Structure](#-project-structure)
+12. [Reading the Dashboard — an honest statistics guide](#-reading-the-dashboard--an-honest-statistics-guide)
+13. [Future Development](#-future-development)
 
 ---
 
@@ -45,6 +46,16 @@ BetQL trains a Deep Q-Network to play blackjack through pure self-play — no st
 - 🔬 **Lab** — a training dashboard where you design an agent (architecture, dropout, learning rate, rule set, steps), launch a run, and watch it learn in real time: rolling mean-reward chart, live win/push/loss rates, step throughput, ETA, automatic best-checkpoint tracking and a rigorous final evaluation with confidence intervals.
 
 Crucially, **the training environment and the playing environment are the same code** — the agent doubles and splits during training under exactly the rules you play with in the Casino.
+
+---
+
+## 🎯 Why this domain
+
+Most RL demos cannot tell you whether the agent learned the **right policy** or merely a **lucky one**. A rising reward curve is consistent with both, and with no ground truth to check against, the only available claim is "it scored well."
+
+Blackjack does not have that problem. **Optimal play is solved** — every state has a known correct action — so the learned policy is checkable *state by state*, not just in aggregate. That turns "did it work?" from an opinion into a measurement, and it is why this repository spends as much space on [evaluation methodology](#-evaluation-methodology) and [honest statistics](#-reading-the-dashboard--an-honest-statistics-guide) as on the agent itself.
+
+The transferable part is the machinery, not the cards. Learning a control policy from **delayed, noisy reward** is the same problem that appears in machine control — where the reward is fuel, wear or cycle time rather than a payout, and where you rarely get a solved baseline to check yourself against. Building the method somewhere it *can* be verified is how you earn the right to trust it somewhere it cannot.
 
 ---
 
