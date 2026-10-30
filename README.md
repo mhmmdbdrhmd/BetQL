@@ -415,10 +415,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
  <br><br>
 
+**Open to contract work** — embedded systems, CAN / J1939 / ISOBUS and on-device AI. [contact@biss-engineering.com](mailto:contact@biss-engineering.com) · [biss-engineering.com](https://biss-engineering.com)
+
 <div align="center">
 <div align="center"><p align="center">
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="mhmmdbdrhmd@gmail.com" style="text-decoration: none;" alt="Email">
+    <a href="mailto:contact@biss-engineering.com" style="text-decoration: none;" alt="Email">
         <img src="https://github.com/mhmmdbdrhmd/Data/blob/main/Icons/ICON%20_Black%20-%20GMail.png" width="6%" />
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="https://github.com/mhmmdbdrhmd" style="text-decoration: none;" alt="GitHub">
@@ -431,7 +433,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
         <img src="https://github.com/mhmmdbdrhmd/Data/blob/main/Icons/ICON%20_Black%20-%20Twitter%20X.png" width="6%"/>
     </a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://biss.qzz.io" style="text-decoration: none;" alt="Website">
+  <a href="https://biss-engineering.com" style="text-decoration: none;" alt="Website">
         <img src="https://github.com/mhmmdbdrhmd/Data/blob/main/Icons/ICON%20_Black%20-%20Website.png" width="6%"/>
     </a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
